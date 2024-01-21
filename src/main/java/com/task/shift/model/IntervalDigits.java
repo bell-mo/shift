@@ -2,8 +2,8 @@ package com.task.shift.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "table_interval")
-public class Interval {
+@Table(name = "table_interval_digits")
+public class IntervalDigits {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -12,9 +12,9 @@ public class Interval {
     @Column(name = "column_end")
     private int end;
 
-    public Interval() { }
+    public IntervalDigits() { }
 
-    public Interval(int start, int end) {
+    public IntervalDigits(int start, int end) {
         this.start = start;
         this.end = end;
     }
