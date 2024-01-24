@@ -1,6 +1,10 @@
 package com.task.shift.model;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @Entity
 @Table(name = "table_interval_digits")
 public class IntervalDigits {
@@ -33,5 +37,12 @@ public class IntervalDigits {
 
     public void setStart(int start) {
         this.start = start;
+    }
+
+    public List<Integer> toList() {
+        List<Integer> res = new ArrayList<>();
+        res.add(this.getStart());
+        res.add(this.getEnd());
+        return res;
     }
 }

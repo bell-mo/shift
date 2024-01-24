@@ -1,13 +1,12 @@
 package com.task.shift.controller;
 
-//import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.task.shift.model.IntervalDigits;
-import com.task.shift.model.IntervalLetters;
-import com.task.shift.service.IntervalService;
 import com.task.shift.repository.*;
+import static com.task.shift.service.IntervalService.getMergedListDigits;
+import static com.task.shift.service.IntervalService.getMergedListLetters;
+
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.jetbrains.annotations.NotNull;
-
 
 
 
@@ -30,45 +27,40 @@ import org.jetbrains.annotations.NotNull;
 public class Controller {
     @Autowired
     private IntervalRepositoryDigits intervalRepositoryDigits;
+    @Autowired
     private IntervalRepositoryLetters intervalRepositoryLetters;
     @PostMapping("/merge")
     public ResponseEntity<HttpStatus> mergeIntervals(@RequestParam(defaultValue = "digits") String kind,
-                                                     @NotNull @RequestBody List<List<String>> intervals){
+                                                     @RequestBody List<List<String>> intervals){
         if(intervals.isEmpty()){
-            return null;
-        }
-        if(intervals.size()==1){
-            return null;
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         if (Objects.equals(kind, "digits")) {
-
-            List<IntervalDigits> mergedList = IntervalService.getMergedListDigits(IntervalService.getListDigits(intervals));
-            for (IntervalDigits item : mergedList) {
-                System.out.println(item.getStart());
-                System.out.println(item.getEnd());
-                intervalRepositoryDigits.save(item);
-            }
+            //Объединяем интервалы и сохраняем в БД
+            intervalRepositoryDigits.saveAll(getMergedListDigits(intervals));
         } else if (Objects.equals(kind, "letters")) {
-
-            List<IntervalLetters> mergedList = IntervalService.getMergedListLetters(IntervalService.getListLetters(intervals));
-            for(IntervalLetters item : mergedList) {
-                System.out.println(item.getStart());
-                System.out.println(item.getEnd());
-                intervalRepositoryLetters.save(item);
-            }
+            //Объединяем интервалы и сохраняем в БД
+            intervalRepositoryLetters.saveAll(getMergedListLetters(intervals));
         }
-        else return (ResponseEntity<HttpStatus>) ResponseEntity.badRequest();
-        return ResponseEntity.ok(HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @GetMapping("/min")
     @ResponseBody
-    public List<String> getMinInterval(@RequestParam(defaultValue = "digits") String kind){
-        if (kind == "digits") return intervalRepositoryDigits.findMinDigits();
-        else if (kind == "letters") return intervalRepositoryLetters.findMinLetters();
-        return (List<String>) ResponseEntity.badRequest();
+    public List<?> getMinInterval(@RequestParam(defaultValue = "digits") String kind) {
+
+        if (Objects.equals(kind, "digits"))
+            return intervalRepositoryDigits.findMin().toList();
+
+        else if (Objects.equals(kind, "letters"))
+            return intervalRepositoryLetters.findMin().toList();
+
+        return (List<?>) ResponseEntity.badRequest();
     }
 
 

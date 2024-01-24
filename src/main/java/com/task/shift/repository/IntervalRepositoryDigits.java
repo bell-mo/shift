@@ -13,5 +13,5 @@ public interface IntervalRepositoryDigits extends JpaRepository<IntervalDigits, 
             "FROM table_interval_digits " +
             "ORDER BY column_start, column_end " +
             "LIMIT 1;", nativeQuery = true)
-    List<String> findMinDigits();
+    IntervalDigits findMin();
 }

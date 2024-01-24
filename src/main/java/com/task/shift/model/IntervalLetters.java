@@ -1,6 +1,9 @@
 package com.task.shift.model;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "table_interval_letters")
 public class IntervalLetters {
@@ -19,7 +22,7 @@ public class IntervalLetters {
         this.end = end;
     }
 
-    public int getStart() {
+    public char getStart() {
         return start;
     }
 
@@ -33,5 +36,12 @@ public class IntervalLetters {
 
     public void setStart(char start) {
         this.start = start;
+    }
+
+    public List<Character> toList() {
+        List<Character> res = new ArrayList<>();
+        res.add(this.getStart());
+        res.add(this.getEnd());
+        return res;
     }
 }

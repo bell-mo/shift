@@ -1,43 +1,47 @@
 package com.task.shift.service;
-
 import com.task.shift.model.IntervalDigits;
 import com.task.shift.model.IntervalLetters;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-
-@org.springframework.stereotype.Service
 public class IntervalService {
+    public static List<List<Integer>> convertListDigits(List<List<String>> inputList) {
+        // Создаем компаратор для сортировки по первому элементу списка
+        java.util.Comparator<List<String>> comp = java.util.Comparator.comparing(s -> Integer.parseInt(s.get(0)));
 
-    public static List<List<Integer>> getListDigits(List<List<String>> intervals) {
-        List<List<Integer>> intervalsDigits = new ArrayList<>();
+        inputList.sort(comp); // Сортируем входной список по первым элементам
 
-        for (int i = 0; i < intervals.size(); i++) {
-            List<String> interval = intervals.get(i);
-            List<Integer> intervalDigits = new ArrayList<>();
-            intervalDigits.add(Integer.parseInt(interval.get(0)));
-            intervalDigits.add(Integer.parseInt(interval.get(1)));
-            intervalsDigits.add(intervalDigits);
+        List<List<Integer>> result = new ArrayList<>();
+        for (List<String> subList : inputList) {
+            List<Integer> intSubList = new ArrayList<>();
+            intSubList.add(Integer.parseInt(subList.get(0)));
+            intSubList.add(Integer.parseInt(subList.get(1)));
+            result.add(intSubList);
         }
-        intervalsDigits.sort(Comparator.comparingInt(List::getFirst));
-        return intervalsDigits;
+        return result;
     }
 
-    public static List<List<Character>> getListLetters(List<List<String>> intervals) {
-        List<List<Character>> intervalsLetters = new ArrayList<>();
+    public static List<List<Character>> convertListLetters(List<List<String>> inputList) {
+        // Создаем компаратор для сортировки по первому символу каждого списка
+        java.util.Comparator<List<String>> comp = java.util.Comparator.comparing(s -> s.get(0).charAt(0));
 
-        for (int i = 0; i < intervals.size(); i++) {
-            List<String> interval = intervals.get(i);
-            List<Character> intervalLetters = new ArrayList<>();
-            intervalLetters.add(interval.get(0).charAt(0));
-            intervalLetters.add(interval.get(1).charAt(0));
-            intervalsLetters.add(intervalLetters);
+        inputList.sort(comp); // Сортируем входной список по первым символам
+
+        List<List<Character>> result = new ArrayList<>();
+        for (List<String> subList : inputList) {
+            List<Character> charSubList = new ArrayList<>();
+            charSubList.add(subList.get(0).charAt(0));
+            charSubList.add(subList.get(1).charAt(0));
+            result.add(charSubList);
         }
-        return intervalsLetters;
+        return result;
     }
-    public static List<IntervalDigits> getMergedListDigits(List<List<Integer>> intervals) {
+
+    public static List<IntervalDigits> getMergedListDigits(List<List<String>> inputList) {
+
+        List<List<Integer>> intervals = convertListDigits(inputList);
+
         List<IntervalDigits> mergedList = new ArrayList<>();
         IntervalDigits prev = new IntervalDigits(intervals.get(0).get(0), intervals.get(0).get(1));
 
@@ -57,7 +61,10 @@ public class IntervalService {
     }
 
 
-    public static List<IntervalLetters> getMergedListLetters(List<List<Character>> intervals) {
+    public static List<IntervalLetters> getMergedListLetters(List<List<String>> inputList) {
+
+        List<List<Character>> intervals = convertListLetters(inputList);
+
         List<IntervalLetters> mergedList = new ArrayList<>();
         IntervalLetters prev = new IntervalLetters(intervals.get(0).get(0), intervals.get(0).get(1));
 

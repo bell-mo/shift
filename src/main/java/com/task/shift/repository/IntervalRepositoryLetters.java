@@ -9,9 +9,9 @@ import java.util.List;
 
 @Repository
 public interface IntervalRepositoryLetters extends JpaRepository<IntervalLetters, Long> {
-    @Query(value = "SELECT * " +
+    @Query(value = "SELECT *" +
             "FROM table_interval_letters " +
             "ORDER BY column_start, column_end " +
             "LIMIT 1;", nativeQuery = true)
-    List<String> findMinLetters();
+    IntervalLetters findMin();
 }
